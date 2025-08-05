@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctor Dashboard</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.0/font/bootstrap-icons.min.css" rel="stylesheet">
+    <style>
+        .navbar-brand { font-weight: 600; }
+        .card { border: none; box-shadow: 0 2px 10px rgba(0,0,0,0.08); }
+        .btn-outline-primary:hover { transform: translateY(-1px); }
+        .appointment-card { transition: all 0.3s ease; }
+        .appointment-card:hover { transform: translateY(-2px); box-shadow: 0 4px 20px rgba(0,0,0,0.12); }
+        .prescription-form { background: #f8f9fa; border-radius: 10px; }
+        .medication-item { background: white; border: 1px solid #e9ecef; border-radius: 8px; }
+        .status-pending { color: #ffc107; }
+        .status-scheduled { color: #198754; }
+        .status-completed { color: #6c757d; }
+        .nav-pills .nav-link.active { background-color: #0d6efd; }
+        .form-control:focus, .form-select:focus { 
+            border-color: #86b7fe; 
+            box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25); 
+        }
+    </style>
+</head>
+<body class="bg-light">
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#"><i class="bi bi-hospital me-2"></i>MediCare Portal</a>
+            <div class="navbar-nav ms-auto">
+                <span class="navbar-text me-3">Dr. Sarah Johnson</span>
+                <button class="btn btn-outline-light btn-sm"><i class="bi bi-box-arrow-right"></i></button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid py-4">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-3">
+                <div class="card">
+                    <div class="card-body">
+                        <ul class="nav nav-pills flex-column" id="mainTabs">
+                            <li class="nav-item">
+                                <a class="nav-link active" data-bs-toggle="pill" href="#appointments">
+                                    <i class="bi bi-calendar-check me-2"></i>Appointments
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" data-bs-toggle="pill" href="#prescription">
+                                    <i class="bi bi-prescription2 me-2"></i>Prescription
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="col-md-9">
+                <div class="tab-content">
+                    <!-- Appointments Tab -->
+                    <div class="tab-pane fade show active" id="appointments">
+                        <!-- Pending Approvals -->
+                        <div class="card mb-4">
+                            <div class="card-header bg-warning text-dark">
+                                <h5 class="mb-0"><i class="bi bi-clock me-2"></i>Pending Approvals (2)</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row" id="pendingAppointments">
+                                    <div class="col-md-6 mb-3">
+                                        <div class="card appointment-card border-warning">
+                                            <div class="card-body">
+                                                <div class="d-flex justify-content-between align-items-start">
+                                                    <div>
+                                                        <h6 class="card-title mb-1">John Miller</h6>
+                                                        <p class="text-muted small mb-2">Age: 45 | ID: P001</p>
+                                                        <p class="text-muted small mb-2"><i class="bi bi-calendar me-1"></i>Requested: 10:30 AM</p>
+                                                        <p class="text-muted small mb-0">Reason: Chest pain, shortness of breath</p>
+                                                    </div>
+                                                    <span class="badge bg-warning">Pending</span>
+                                                </div>
+                                                <div class="mt-3">
+                                                    <button class="btn btn-success btn-sm me-2" onclick="approveAppointment('P001')">
+                                                        <i class="bi bi-check-lg"></i> Approve
+                                                    </button>
+                                                    <button class="btn btn-outline-danger btn-sm" onclick="rejectAppointment('P001')">
+                                                        <i class="bi bi-x-lg"></i> Reject
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <div class="card appointment-card border-warning">
+                                            <div class="card-body">
+                                                <div class="d-flex justify-content-between align-items-start">
+                                                    <div>
+                                                        <h6 class="card-title mb-1">Emily Davis</h6>
+                                                        <p class="text-muted small mb-2">Age: 32 | ID: P002</p>
+                                                        <p class="text-muted small mb-2"><i class="bi bi-calendar me-1"></i>Requested: 2:15 PM</p>
+                                                        <p class="text-muted small mb-0">Reason: Follow-up consultation</p>
+                                                    </div>
+                                                    <span class="badge bg-warning">Pending</span>
+                                                </div>
+                                                <div class="mt-3">
+                                                    <button class="btn btn-success btn-sm me-2" onclick="approveAppointment('P002')">
+                                                        <i class="bi bi-check-lg"></i> Approve
+                                                    </button>
+                                                    <button class="btn btn-outline-danger btn-sm" onclick="rejectAppointment('P002')">
+                                                        <i class="bi bi-x-lg"></i> Reject
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Today's Scheduled Appointments -->
+                        <div class="card">
+                            <div class="card-header bg-success text-white">
+                                <h5 class="mb-0"><i class="bi bi-calendar-day me-2"></i>Today's Scheduled Appointments (3)</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row" id="scheduledAppointments">
+                                    <div class="col-md-4 mb-3">
+                                        <div class="card appointment-card border-success">
+                                            <div class="card-body">
+                                                <div class="d-flex justify-content-between align-items-start">
+                                                    <div>
+                                                        <h6 class="card-title mb-1">Michael Brown</h6>
+                                                        <p class="text-muted small mb-2">Age: 28 | ID: P003</p>
+                                                        <p class="text-success small mb-2"><i class="bi bi-clock me-1"></i>9:00 AM</p>
+                                                        <p class="text-muted small mb-0">Reason: Regular checkup</p>
+                                                    </div>
+                                                    <span class="badge bg-success">Scheduled</span>
+                                                </div>
+                                                <div class="mt-3">
+                                                    <button class="btn btn-primary btn-sm" onclick="startConsultation('P003')">
+                                                        <i class="bi bi-play-fill"></i> Start
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <div class="card appointment-card border-success">
+                                            <div class="card-body">
+                                                <div class="d-flex justify-content-between align-items-start">
+                                                    <div>
+                                                        <h6 class="card-title mb-1">Sarah Wilson</h6>
+                                                        <p class="text-muted small mb-2">Age: 55 | ID: P004</p>
+                                                        <p class="text-success small mb-2"><i class="bi bi-clock me-1"></i>11:30 AM</p>
+                                                        <p class="text-muted small mb-0">Reason: Diabetes follow-up</p>
+                                                    </div>
+                                                    <span class="badge bg-success">Scheduled</span>
+                                                </div>
+                                                <div class="mt-3">
+                                                    <button class="btn btn-primary btn-sm" onclick="startConsultation('P004')">
+                                                        <i class="bi bi-play-fill"></i> Start
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <div class="card appointment-card border-success">
+                                            <div class="card-body">
+                                                <div class="d-flex justify-content-between align-items-start">
+                                                    <div>
+                                                        <h6 class="card-title mb-1">Robert Taylor</h6>
+                                                        <p class="text-muted small mb-2">Age: 62 | ID: P005</p>
+                                                        <p class="text-success small mb-2"><i class="bi bi-clock me-1"></i>3:45 PM</p>
+                                                        <p class="text-muted small mb-0">Reason: Hypertension review</p>
+                                                    </div>
+                                                    <span class="badge bg-success">Scheduled</span>
+                                                </div>
+                                                <div class="mt-3">
+                                                    <button class="btn btn-primary btn-sm" onclick="startConsultation('P005')">
+                                                        <i class="bi bi-play-fill"></i> Start
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Prescription Tab -->
+                    <div class="tab-pane fade" id="prescription">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0"><i class="bi bi-prescription2 me-2"></i>Patient Prescription & Follow-up</h5>
+                            </div>
+                            <div class="card-body prescription-form p-4">
+                                <!-- Patient Selection -->
+                                <div class="row mb-4">
+                                    <div class="col-md-6">
+                                        <label class="form-label">Select Patient</label>
+                                        <select class="form-select" id="patientSelect" onchange="loadPatientInfo()">
+                                            <option value="">Choose patient...</option>
+                                            <option value="P003">Michael Brown - P003</option>
+                                            <option value="P004">Sarah Wilson - P004</option>
+                                            <option value="P005">Robert Taylor - P005</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Consultation Date</label>
+                                        <input type="date" class="form-control" id="consultationDate" value="2025-08-02">
+                                    </div>
+                                </div>
+
+                                <!-- Patient Info Display -->
+                                <div id="patientInfo" class="row mb-4" style="display: none;">
+                                    <div class="col-12">
+                                        <div class="card bg-white border">
+                                            <div class="card-body">
+                                                <div class="row">
+                                                    <div class="col-md-3">
+                                                        <strong>Patient:</strong> <span id="patientName"></span>
+                                                    </div>
+                                                    <div class="col-md-2">
+                                                        <strong>Age:</strong> <span id="patientAge"></span>
+                                                    </div>
+                                                    <div class="col-md-2">
+                                                        <strong>ID:</strong> <span id="patientId"></span>
+                                                    </div>
+                                                    <div class="col-md-5">
+                                                        <strong>Last Visit:</strong> <span id="lastVisit"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Diagnosis & Symptoms -->
+                                <div class="row mb-4">
+                                    <div class="col-md-6">
+                                        <label class="form-label">Diagnosis</label>
+                                        <textarea class="form-control" rows="3" placeholder="Enter primary diagnosis..."></textarea>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Symptoms & Observations</label>
+                                        <textarea class="form-control" rows="3" placeholder="Patient symptoms and clinical observations..."></textarea>
+                                    </div>
+                                </div>
+
+                                <!-- Medications -->
+                                <div class="mb-4">
+                                    <div class="d-flex justify-content-between align-items-center mb-3">
+                                        <label class="form-label mb-0">Medications</label>
+                                        <button type="button" class="btn btn-outline-primary btn-sm" onclick="addMedication()">
+                                            <i class="bi bi-plus-lg"></i> Add Medication
+                                        </button>
+                                    </div>
+                                    <div id="medicationsList">
+                                        <!-- Medications will be added here -->
+                                    </div>
+                                </div>
+
+                                <!-- Visit Type & Follow-up -->
+                                <div class="row mb-4">
+                                    <div class="col-md-4">
+                                        <label class="form-label">Visit Type</label>
+                                        <select class="form-select" id="visitType" onchange="toggleFollowup()">
+                                            <option value="consultation">Routine Consultation</option>
+                                            <option value="observation">Observation Required</option>
+                                            <option value="hospital">Hospital Visit Required</option>
+                                            <option value="followup">Follow-up Required</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4" id="followupDateDiv" style="display: none;">
+                                        <label class="form-label">Follow-up Date</label>
+                                        <input type="date" class="form-control" id="followupDate">
+                                    </div>
+                                    <div class="col-md-4" id="priorityDiv" style="display: none;">
+                                        <label class="form-label">Priority</label>
+                                        <select class="form-select" id="priority">
+                                            <option value="routine">Routine</option>
+                                            <option value="urgent">Urgent</option>
+                                            <option value="emergency">Emergency</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <!-- Additional Instructions -->
+                                <div class="row mb-4">
+                                    <div class="col-md-6">
+                                        <label class="form-label">General Instructions</label>
+                                        <textarea class="form-control" rows="3" placeholder="Diet, lifestyle, general care instructions..."></textarea>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Next Visit Instructions</label>
+                                        <textarea class="form-control" rows="3" placeholder="Instructions for next visit or follow-up..."></textarea>
+                                    </div>
+                                </div>
+
+                                <!-- Patient Notification -->
+                                <div class="row mb-4">
+                                    <div class="col-12">
+                                        <div class="card bg-info bg-opacity-10 border-info">
+                                            <div class="card-body">
+                                                <h6 class="card-title text-info"><i class="bi bi-bell me-2"></i>Patient Notification Settings</h6>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox" id="smsNotification" checked>
+                                                    <label class="form-check-label" for="smsNotification">
+                                                        Send SMS notification for follow-up appointment
+                                                    </label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox" id="emailNotification" checked>
+                                                    <label class="form-check-label" for="emailNotification">
+                                                        Send email with prescription and instructions
+                                                    </label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox" id="feedbackRequest">
+                                                    <label class="form-check-label" for="feedbackRequest">
+                                                        Request patient feedback after 24 hours
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Action Buttons -->
+                                <div class="d-flex gap-3">
+                                    <button type="button" class="btn btn-primary" onclick="savePrescription()">
+                                        <i class="bi bi-check-lg me-2"></i>Save Prescription
+                                    </button>
+                                    <button type="button" class="btn btn-outline-success" onclick="generatePrescription()">
+                                        <i class="bi bi-printer me-2"></i>Generate Prescription
+                                    </button>
+                                    <button type="button" class="btn btn-outline-info" onclick="scheduleFollowup()">
+                                        <i class="bi bi-calendar-plus me-2"></i>Schedule Follow-up
+                                    </button>
+                                    <button type="button" class="btn btn-outline-secondary" onclick="clearForm()">
+                                        <i class="bi bi-arrow-clockwise me-2"></i>Reset Form
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div class="modal fade" id="successModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="bi bi-check-circle text-success me-2"></i>Success</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="successMessage"></div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">OK</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let medicationCount = 0;
+        const patientData = {
+            'P003': { name: 'Michael Brown', age: 28, lastVisit: 'July 15, 2025' },
+            'P004': { name: 'Sarah Wilson', age: 55, lastVisit: 'July 28, 2025' },
+            'P005': { name: 'Robert Taylor', age: 62, lastVisit: 'July 20, 2025' }
+        };
+
+        // Appointment Management Functions
+        function approveAppointment(patientId) {
+            showSuccess(`Appointment approved for patient ${patientId}. Patient has been notified via SMS and email.`);
+            // Remove from pending appointments
+            document.querySelector(`button[onclick="approveAppointment('${patientId}')"]`).closest('.col-md-6').remove();
+        }
+
+        function rejectAppointment(patientId) {
+            const reason = prompt('Please provide a reason for rejection:');
+            if (reason) {
+                showSuccess(`Appointment rejected for patient ${patientId}. Patient notified with reason: "${reason}"`);
+                document.querySelector(`button[onclick="rejectAppointment('${patientId}')"]`).closest('.col-md-6').remove();
+            }
+        }
+
+        function startConsultation(patientId) {
+            // Switch to prescription tab and load patient
+            document.querySelector('[data-bs-toggle="pill"][href="#prescription"]').click();
+            setTimeout(() => {
+                document.getElementById('patientSelect').value = patientId;
+                loadPatientInfo();
+            }, 300);
+        }
+
+        // Patient Info Functions
+        function loadPatientInfo() {
+            const patientId = document.getElementById('patientSelect').value;
+            const patientInfo = document.getElementById('patientInfo');
+            
+            if (patientId && patientData[patientId]) {
+                const patient = patientData[patientId];
+                document.getElementById('patientName').textContent = patient.name;
+                document.getElementById('patientAge').textContent = patient.age;
+                document.getElementById('patientId').textContent = patientId;
+                document.getElementById('lastVisit').textContent = patient.lastVisit;
+                patientInfo.style.display = 'block';
+            } else {
+                patientInfo.style.display = 'none';
+            }
+        }
+
+        // Medication Management
+        function addMedication() {
+            medicationCount++;
+            const medicationHtml = `
+                <div class="medication-item p-3 mb-3" id="medication${medicationCount}">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <label class="form-label">Medication Name</label>
+                            <input type="text" class="form-control" placeholder="e.g., Amoxicillin">
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label">Dosage</label>
+                            <input type="text" class="form-control" placeholder="e.g., 500mg">
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label">Frequency</label>
+                            <select class="form-select">
+                                <option value="once">Once daily</option>
+                                <option value="twice">Twice daily</option>
+                                <option value="thrice">Three times daily</option>
+                                <option value="four">Four times daily</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label">Duration</label>
+                            <input type="text" class="form-control" placeholder="e.g., 7 days">
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label">Instructions</label>
+                            <select class="form-select">
+                                <option value="before">Before meals</option>
+                                <option value="after">After meals</option>
+                                <option value="with">With meals</option>
+                                <option value="empty">Empty stomach</option>
+                            </select>
+                        </div>
+                        <div class="col-md-1 d-flex align-items-end">
+                            <button type="button" class="btn btn-outline-danger btn-sm" onclick="removeMedication(${medicationCount})">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.getElementById('medicationsList').insertAdjacentHTML('beforeend', medicationHtml);
+        }
+
+        function removeMedication(id) {
+            document.getElementById(`medication${id}`).remove();
+        }
+
+        // Visit Type Management
+        function toggleFollowup() {
+            const visitType = document.getElementById('visitType').value;
+            const followupDiv = document.getElementById('followupDateDiv');
+            const priorityDiv = document.getElementById('priorityDiv');
+            
+            if (visitType === 'followup' || visitType === 'observation' || visitType === 'hospital') {
+                followupDiv.style.display = 'block';
+                if (visitType === 'hospital') {
+                    priorityDiv.style.display = 'block';
+                } else {
+                    priorityDiv.style.display = 'none';
+                }
+                
+                // Set default follow-up date (7 days from now)
+                const followupDate = new Date();
+                followupDate.setDate(followupDate.getDate() + 7);
+                document.getElementById('followupDate').value = followupDate.toISOString().split('T')[0];
+            } else {
+                followupDiv.style.display = 'none';
+                priorityDiv.style.display = 'none';
+            }
+        }
+
+        // Form Actions
+        function savePrescription() {
+            const patientId = document.getElementById('patientSelect').value;
+            if (!patientId) {
+                alert('Please select a patient first.');
+                return;
+            }
+            
+            const visitType = document.getElementById('visitType').value;
+            let message = `Prescription saved successfully for patient ${patientId}.`;
+            
+            if (visitType === 'followup') {
+                message += ' Follow-up appointment has been scheduled and patient will be notified.';
+            } else if (visitType === 'hospital') {
+                message += ' Hospital visit has been scheduled with high priority. Patient and hospital notified.';
+            } else if (visitType === 'observation') {
+                message += ' Observation period scheduled. Patient will receive monitoring instructions.';
+            }
+            
+            if (document.getElementById('feedbackRequest').checked) {
+                message += ' Patient feedback request will be sent after 24 hours.';
+            }
+            
+            showSuccess(message);
+        }
+
+        function generatePrescription() {
+            const patientId = document.getElementById('patientSelect').value;
+            if (!patientId) {
+                alert('Please select a patient first.');
+                return;
+            }
+            showSuccess('Prescription PDF generated successfully. Document sent to printer and patient email.');
+        }
+
+        function scheduleFollowup() {
+            const patientId = document.getElementById('patientSelect').value;
+            if (!patientId) {
+                alert('Please select a patient first.');
+                return;
+            }
+            
+            const followupDate = document.getElementById('followupDate').value;
+            if (!followupDate) {
+                alert('Please select a follow-up date.');
+                return;
+            }
+            
+            showSuccess(`Follow-up appointment scheduled for ${followupDate}. Patient will receive confirmation via SMS and email with automatic reminders.`);
+        }
+
+        function clearForm() {
+            if (confirm('Are you sure you want to clear all form data?')) {
+                document.getElementById('patientSelect').value = '';
+                document.getElementById('patientInfo').style.display = 'none';
+                document.getElementById('medicationsList').innerHTML = '';
+                document.querySelectorAll('textarea, input[type="text"]').forEach(input => input.value = '');
+                document.getElementById('visitType').value = 'consultation';
+                toggleFollowup();
+                medicationCount = 0;
+            }
+        }
+
+        function showSuccess(message) {
+            document.getElementById('successMessage').textContent = message;
+            new bootstrap.Modal(document.getElementById('successModal')).show();
+        }
+
+        // Initialize with some default medications for demo
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set today's date
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('consultationDate').value = today;
+        });
+    </script>
+</body>
+</html>

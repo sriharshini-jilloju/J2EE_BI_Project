@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{fragments/layout}">
+<head>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async
+	src="https://www.googletagmanager.com/gtag/js?id=UA-90680653-2"></script>
+<script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-90680653-2');
+    </script>
+
+<!-- Required meta tags -->
+<meta charset="utf-8">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+<!-- Twitter -->
+<!-- <meta name="twitter:site" content="@bootstrapdash">
+    <meta name="twitter:creator" content="@bootstrapdash">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Azia">
+    <meta name="twitter:description" content="Responsive Bootstrap 4 Dashboard Template">
+    <meta name="twitter:image" content="https://www.bootstrapdash.com/azia/img/azia-social.png"> -->
+
+<!-- Facebook -->
+<!-- <meta property="og:url" content="https://www.bootstrapdash.com/azia">
+    <meta property="og:title" content="Azia">
+    <meta property="og:description" content="Responsive Bootstrap 4 Dashboard Template">
+
+    <meta property="og:image" content="https://www.bootstrapdash.com/azia/img/azia-social.png">
+    <meta property="og:image:secure_url" content="https://www.bootstrapdash.com/azia/img/azia-social.png">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="600"> -->
+
+<!-- Meta -->
+<meta name="description"
+	content="Responsive Bootstrap 4 Dashboard Template">
+<meta name="author" content="BootstrapDash">
+
+<title>Consultations | Doctor Online</title>
+
+<!-- vendor css -->
+<link href="../lib/fontawesome-free/css/all.min.css" rel="stylesheet">
+<link href="../lib/ionicons/css/ionicons.min.css" rel="stylesheet">
+<link href="../lib/typicons.font/typicons.css" rel="stylesheet">
+
+<!-- azia CSS -->
+<link rel="stylesheet" href="../css/azia.css">
+
+<style>
+#qualification-group div {
+	padding: 4px 8px;
+	border: 1px solid #ccc;
+	border-radius: 5px;
+	background-color: #f8f9fa;
+	cursor: pointer;
+}
+</style>
+
+</head>
+<body>
+
+	<div class="content-wrapper" layout:fragment="content">
+
+		<div class="az-content pd-y-20 pd-lg-y-30 pd-xl-y-40">
+			<div class="container">
+				<div class="az-content-left az-content-left-components">
+					<div class="component-item">
+						<label>Appointments</label>
+						<nav class="nav flex-column">
+							<a th:href="@{/doctors/scheduled}" class="nav-link">Scheduled</a>
+							<a th:href="@{/doctors/requests}" class="nav-link"
+								th:classappend="${activeTab} == 'Requests' ? 'active' : ''">Requests</a>
+
+							<!--<a th:href="@{/appointments/completed}" class="nav-link"
+								th:classappend="${activeTab} == 'Completed' ? 'active' : ''">Completed
+							</a> <a th:href="@{/appointments/expired}" class="nav-link"
+								th:classappend="${activeTab} == 'Expired' ? 'active' : ''">Expired
+							</a> -->
+						</nav>
+
+					</div>
+					<!-- component-item -->
+
+				</div>
+				<!-- az-content-left -->
+				<div class="az-content-body pd-lg-l-40 d-flex flex-column">
+					<div class="az-content-breadcrumb">
+						<span>Appointments</span>
+					</div>
+					<div class="d-flex justify-content-between align-items-center">
+						<h2 class="az-content-title">
+							<span th:text="${activeTab}">Title</span>
+						</h2>
+
+					</div>
+
+					<div id="loader" style="text-align: center; padding: 1rem;">
+						<span class="spinner-border text-primary" role="status"></span>
+						<p>Loading data...</p>
+					</div>
+					<div class="table-responsive" id="table-container"
+						style="display: none">
+
+						<table id="requests-table"
+							class="table mg-b-0 table-borderless table-hover">
+							<thead>
+								<tr>
+									<th>ID</th>
+									<th>Appointment Type</th>
+									<th>Requested Date</th>
+									<th>Doctor</th>
+									<th>Date</th>
+									<th>Slot</th>
+								<!-- 	<th>Status</th> -->
+									<th>Action</th>
+								</tr>
+							</thead>
+							<tbody>
+								<!-- 	<tr class="clickable-row" data-id="1">
+									<td>Tiger Nixon</td>
+									<td>System Architect</td>
+									<td>$320,800</td>
+									<td><span class="action-buttons"> <a href="#"
+											hidden class="edit-btn" data-id="1" title="Edit"><i
+												class="fas fa-edit"></i></a> <a href="#" class="delete-btn"
+											data-id="1" title="Delete"><i class="fas fa-trash-alt"></i></a>
+									</span></td>
+								</tr> -->
+
+								<tr th:each="appointment : ${appointments}"
+									class="clickable-row" th:attr="data-id=${appointment.id}">
+									<td><span th:text="${appointment.id}">id</span></td>
+									<td><span
+										th:text="${appointment.isInstant} ? 'Instant' : 'Scheduled'">Type</span>
+									</td>
+									<td
+										th:text="${#temporals.format(appointment.requestedAt, 'dd-MM-yy, hh:mm a')}"></td>
+									<td th:text="${appointment.doctor?.name ?: '-'}"></td>
+
+									<td
+										th:text="${appointment.date != null ? #temporals.format(appointment.date, 'dd-MM-yy') : '-'}"></td>
+
+									<td
+										th:text="${appointment.startTime != null ? #temporals.format(appointment.startTime, 'hh:mm a') : '-'}"></td>
+
+
+								<!-- 	<td><span
+										th:class="'status-badge status-' + ${appointment.status}"
+										th:text="${appointment.status}">Status</span></td> -->
+
+									<td><span class="action-buttons"> <a href="#"
+											hidden class="edit-btn" th:attr="data-id=${appointment.id}"
+											title="Edit"> <i class="fas fa-edit"></i>
+										</a><a href="#" class="edit-btn btn-confirm"
+											th:attr="data-id=${appointment.id}" title="Confirm"> 
+												 Confirm
+										</a>
+									</span></td>
+								</tr>
+
+
+							</tbody>
+						</table>
+					</div>
+					<!-- table-responsive -->
+
+
+					<!-- Appointment Details Modal -->
+					<div class="modal fade" id="appointmentDetailsModal" tabindex="-1"
+						aria-labelledby="appointmentDetailsModalLabel" aria-hidden="true">
+						<div class="modal-dialog modal-lg">
+							<div class="modal-content">
+								<div class="modal-header">
+									<h5 class="modal-title">Appointment Details</h5>
+									<button type="button" class="btn-close" data-bs-dismiss="modal"
+										aria-label="Close"></button>
+								</div>
+								<div class="modal-body">
+									<dl class="row">
+										<dt class="col-sm-4">Appointment ID</dt>
+										<dd class="col-sm-8" id="appt-id"></dd>
+
+										<dt class="col-sm-4">Type</dt>
+										<dd class="col-sm-8" id="appt-type"></dd>
+
+										<dt class="col-sm-4">Status</dt>
+										<dd class="col-sm-8" id="appt-status"></dd>
+
+										<dt class="col-sm-4">Date</dt>
+										<dd class="col-sm-8" id="appt-date"></dd>
+
+										<dt class="col-sm-4">Time Slot</dt>
+										<dd class="col-sm-8" id="appt-time-slot"></dd>
+
+										<dt class="col-sm-4">Doctor</dt>
+										<dd class="col-sm-8" id="appt-doctor"></dd>
+
+										<dt class="col-sm-4">Patient</dt>
+										<dd class="col-sm-8" id="appt-patient"></dd>
+
+										<dt class="col-sm-4">Contact</dt>
+										<dd class="col-sm-8" id="appt-contact"></dd>
+
+										<dt class="col-sm-4">Gender / Age</dt>
+										<dd class="col-sm-8" id="appt-gender-age"></dd>
+
+										<dt class="col-sm-4">Symptoms</dt>
+										<dd class="col-sm-8" id="appt-symptoms"></dd>
+
+										<dt class="col-sm-4">Requested At</dt>
+										<dd class="col-sm-8" id="appt-requested"></dd>
+
+										<dt class="col-sm-4">Confirmed At</dt>
+										<dd class="col-sm-8" id="appt-confirmed"></dd>
+
+										<dt class="col-sm-4">Completed At</dt>
+										<dd class="col-sm-8" id="appt-completed"></dd>
+
+										<dt class="col-sm-4">Session Link</dt>
+										<dd class="col-sm-8" id="appt-link"></dd>
+
+										<dt class="col-sm-4">Booked For</dt>
+										<dd class="col-sm-8" id="appt-self-other"></dd>
+									</dl>
+									
+								</div>
+							</div>
+						</div>
+					</div>
+
+
+
+					<div class="modal fade" id="confirmDeleteModal" tabindex="-1"
+						aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+						<div class="modal-dialog modal-dialog-centered">
+							<div class="modal-content shadow-sm rounded-3">
+								<div class="modal-header border-0">
+									<h5 class="modal-title" id="confirmDeleteModalLabel">Confirm
+										Request</h5>
+									<button type="button" class="btn-close" data-bs-dismiss="modal"
+										aria-label="Close"></button>
+								</div>
+								<div class="modal-body">Are you sure
+									you want to confirm this appointment request?</div>
+								<div class="modal-footer border-0">
+									<button type="button" class="btn btn-secondary"
+										data-bs-dismiss="modal">Cancel</button>
+									<button type="button" class="btn btn-danger"
+										id="confirmBtn">Confirm</button>
+								</div>
+							</div>
+						</div>
+					</div>
+
+
+					<div class="ht-40"></div>
+				</div>
+				<!-- az-content-body -->
+			</div>
+			<!-- container -->
+		</div>
+		<!-- az-content -->
+	</div>
+
+	<script src="../lib/jquery/jquery.min.js"></script>
+	<script src="../lib/bootstrap/js/bootstrap.bundle.min.js"></script>
+	<script src="../lib/ionicons/ionicons.js"></script>
+	<script src="../js/jquery.cookie.js" type="text/javascript"></script>
+
+	<script src="../js/azia.js"></script>
+
+	<th:block layout:fragment="script">
+		<script th:src="@{'/js/docon/appointments.js'}"></script>
+	</th:block>
+</body>
+</html>

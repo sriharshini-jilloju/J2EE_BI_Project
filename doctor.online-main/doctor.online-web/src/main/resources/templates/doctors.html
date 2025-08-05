@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{fragments/layout}">
+<head>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async
+	src="https://www.googletagmanager.com/gtag/js?id=UA-90680653-2"></script>
+<script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-90680653-2');
+    </script>
+
+<!-- Required meta tags -->
+<meta charset="utf-8">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+<!-- Twitter -->
+<!-- <meta name="twitter:site" content="@bootstrapdash">
+    <meta name="twitter:creator" content="@bootstrapdash">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Azia">
+    <meta name="twitter:description" content="Responsive Bootstrap 4 Dashboard Template">
+    <meta name="twitter:image" content="https://www.bootstrapdash.com/azia/img/azia-social.png"> -->
+
+<!-- Facebook -->
+<!-- <meta property="og:url" content="https://www.bootstrapdash.com/azia">
+    <meta property="og:title" content="Azia">
+    <meta property="og:description" content="Responsive Bootstrap 4 Dashboard Template">
+
+    <meta property="og:image" content="https://www.bootstrapdash.com/azia/img/azia-social.png">
+    <meta property="og:image:secure_url" content="https://www.bootstrapdash.com/azia/img/azia-social.png">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="600"> -->
+
+<!-- Meta -->
+<meta name="description"
+	content="Responsive Bootstrap 4 Dashboard Template">
+<meta name="author" content="BootstrapDash">
+
+<title>Users & Access | Doctor Online</title>
+
+<!-- vendor css -->
+<link href="../lib/fontawesome-free/css/all.min.css" rel="stylesheet">
+<link href="../lib/ionicons/css/ionicons.min.css" rel="stylesheet">
+<link href="../lib/typicons.font/typicons.css" rel="stylesheet">
+
+<!-- azia CSS -->
+<link rel="stylesheet" href="../css/azia.css">
+
+<style>
+#qualification-group div {
+	padding: 4px 8px;
+	border: 1px solid #ccc;
+	border-radius: 5px;
+	background-color: #f8f9fa;
+	cursor: pointer;
+}
+</style>
+
+</head>
+<body>
+
+	<div class="content-wrapper" layout:fragment="content">
+
+		<div class="az-content pd-y-20 pd-lg-y-30 pd-xl-y-40">
+			<div class="container">
+				<div class="az-content-left az-content-left-components">
+					<div class="component-item">
+						<label>Users</label>
+						<nav class="nav flex-column">
+							<a th:href="@{/users/admins}" class="nav-link">Admins</a> <a
+								href="#" class="nav-link active">Doctors</a> <a
+								th:href="@{/users/patients}" class="nav-link">Patients</a>
+						</nav>
+
+						<label>ACCESS</label>
+						<nav class="nav flex-column">
+							<a href="elem-buttons.html" class="nav-link">Roles</a> <a
+								href="elem-dropdown.html" class="nav-link">Permissions</a>
+						</nav>
+						<!-- 		<label>Forms</label>
+						<nav class="nav flex-column">
+							<a href="form-elements.html" class="nav-link">Form Elements</a>
+						</nav>
+						<label>Charts</label>
+						<nav class="nav flex-column">
+							<a href="chart-chartjs.html" class="nav-link">ChartJS</a>
+						</nav>
+
+						<label>Tables</label>
+						<nav class="nav flex-column">
+							<a href="table-basic.html" class="nav-link active">Basic
+								Tables</a>
+						</nav> -->
+					</div>
+					<!-- component-item -->
+
+				</div>
+				<!-- az-content-left -->
+				<div class="az-content-body pd-lg-l-40 d-flex flex-column">
+					<div class="az-content-breadcrumb">
+						<span>Users & Access</span>
+					</div>
+					<div class="d-flex justify-content-between align-items-center">
+						<h2 class="az-content-title">Doctors</h2>
+
+						<button type="button" class="btn btn-purple"
+							data-bs-toggle="modal" data-bs-target="#addUserModal"
+							id="addUserBtn">Add doctor</button>
+
+					</div>
+
+					<div id="loader" style="text-align: center; padding: 1rem;">
+						<span class="spinner-border text-primary" role="status"></span>
+						<p>Loading data...</p>
+					</div>
+					<div class="table-responsive" id="table-container"
+						style="display: none">
+
+						<table id="users-table"
+							class="table mg-b-0 table-borderless table-hover">
+							<thead>
+								<tr>
+									<th>Name</th>
+									<th>Email</th>
+									<th>Delete</th>
+								</tr>
+							</thead>
+							<tbody>
+								<!-- 	<tr class="clickable-row" data-id="1">
+									<td>Tiger Nixon</td>
+									<td>System Architect</td>
+									<td>$320,800</td>
+									<td><span class="action-buttons"> <a href="#"
+											hidden class="edit-btn" data-id="1" title="Edit"><i
+												class="fas fa-edit"></i></a> <a href="#" class="delete-btn"
+											data-id="1" title="Delete"><i class="fas fa-trash-alt"></i></a>
+									</span></td>
+								</tr> -->
+
+								<tr th:each="doctor : ${doctors}" class="clickable-row"
+									th:attr="data-id=${doctor.id}">
+									<td th:text="${doctor.name}">Admin Name</td>
+									<td th:text="${doctor.email}">admin@example.com</td>
+									<td><span class="action-buttons"> <a href="#"
+											hidden class="edit-btn" th:attr="data-id=${doctor.id}"
+											title="Edit"> <i class="fas fa-edit"></i>
+										</a> <a href="#" class="delete-btn" th:attr="data-id=${doctor.id}"
+											title="Delete"> <i class="fas fa-trash-alt"></i>
+										</a>
+									</span></td>
+								</tr>
+
+
+							</tbody>
+						</table>
+					</div>
+					<!-- table-responsive -->
+
+					<div class="modal fade" id="addUserModal" tabindex="-1"
+						aria-labelledby="addUserModalLabel" aria-hidden="true">
+						<div class="modal-dialog modal-dialog-centered modal-md">
+							<div class="modal-content shadow-sm border-0 rounded-4">
+
+								<div class="modal-header border-0 pb-0">
+									<h5 class="modal-title" id="addUserModalLabel">Add User</h5>
+									<button type="button" class="btn-close" data-bs-dismiss="modal"
+										aria-label="Close"></button>
+								</div>
+
+								<div class="modal-body pt-0">
+									<form id="addUserForm" class="needs-validation" novalidate>
+
+										<div class="mb-4 mt-4">
+											<label for="username" class="form-label fw-semibold">Name</label>
+											<input type="text" class="form-control rounded-1"
+												id="user-name" placeholder="Enter name" required>
+											<div class="invalid-feedback">Please enter a name.</div>
+										</div>
+
+										<div class="mb-4 mt-4">
+											<label for="name" class="form-label fw-semibold">Username
+											</label> <input type="text" class="form-control rounded-1"
+												id="user-username" placeholder="Enter username" required>
+											<div class="invalid-feedback">Please enter a name.</div>
+										</div>
+
+
+
+										<div class="mb-4 mt-4">
+											<label for="user-password" class="form-label fw-semibold">Password</label>
+											<input type="text" class="form-control rounded-1"
+												id="user-password" placeholder="Enter Password" required>
+											<div class="invalid-feedback">Password.</div>
+										</div>
+
+
+										<div class="mb-4 mt-4">
+											<label for="user-email" class="form-label fw-semibold">Email</label>
+											<input type="email" class="form-control rounded-1"
+												id="user-email" placeholder="name@example.com" required>
+											<div class="invalid-feedback">Please enter a valid
+												email address.</div>
+										</div>
+
+										<div class="mb-4 mt-4">
+											<label for="user-role" class="form-label fw-semibold">Role</label>
+											<select class="form-select rounded-1" id="user-role" disabled
+												required>
+												<option value="ADMIN">Admin</option>
+												<option value="DOCTOR" selected>Doctor</option>
+												<option value="PATIENT">Patient</option>
+											</select>
+											<div class="invalid-feedback">Please select a role.</div>
+										</div>
+
+										<div class="mb-4 mt-4">
+											<label for="specialization" class="form-label fw-semibold">Specialization</label>
+											<select class="form-select rounded-1" id="specialization"
+												name="specializationId" required>
+												<option value="" selected disabled>Select
+													specialization</option>
+												<th:block th:each="spec : ${specializations}">
+													<option th:value="${spec.id}" th:text="${spec.name}"></option>
+												</th:block>
+											</select>
+											<div class="invalid-feedback">Please select a
+												specialization.</div>
+										</div>
+
+										<div class="mb-4 mt-4">
+											<label class="form-label fw-semibold">Qualifications</label>
+											<div id="qualification-group" class="d-flex flex-wrap gap-2">
+												<div>
+													<input type="checkbox" name="qualifications" value="MBBS">
+													MBBS
+												</div>
+												<div>
+													<input type="checkbox" name="qualifications" value="MD">
+													MD
+												</div>
+												<div>
+													<input type="checkbox" name="qualifications" value="MS">
+													MS
+												</div>
+												<div>
+													<input type="checkbox" name="qualifications" value="BDS">
+													BDS
+												</div>
+												<div>
+													<input type="checkbox" name="qualifications" value="MDS">
+													MDS
+												</div>
+												<div>
+													<input type="checkbox" name="qualifications" value="DNB">
+													DNB
+												</div>
+												<div>
+													<input type="checkbox" name="qualifications" value="BHMS">
+													BHMS
+												</div>
+												<div>
+													<input type="checkbox" name="qualifications" value="BAMS">
+													BAMS
+												</div>
+												<div>
+													<input type="checkbox" name="qualifications" value="PhD">
+													PhD
+												</div>
+												<div>
+													<input type="checkbox" name="qualifications"
+														value="Diploma in Orthopedics"> Diploma in
+													Orthopedics
+												</div>
+												<div>
+													<input type="checkbox" name="qualifications"
+														value="Diploma in Dermatology"> Diploma in
+													Dermatology
+												</div>
+												<div>
+													<input type="checkbox" name="qualifications"
+														value="Diploma in Pediatrics"> Diploma in
+													Pediatrics
+												</div>
+												<div>
+													<input type="checkbox" name="qualifications"
+														value="Fellowship in Cardiology"> Fellowship in
+													Cardiology
+												</div>
+												<div>
+													<input type="checkbox" name="qualifications"
+														value="Fellowship in Gastroenterology"> Fellowship
+													in Gastroenterology
+												</div>
+											</div>
+											<div id="qualification-error" class="text-danger d-none">Please
+												select at least one qualification.</div>
+										</div>
+
+										<hr class="my-3">
+
+										<h5 class="fw-bold mb-3">Doctor Availability Slots</h5>
+
+										<div id="availabilitySlotsWrapper">
+											<!-- 		<div class="availability-slot mb-4 border p-3 rounded">
+												<div class="row g-3">
+													<div class="col-md-4">
+														<label class="form-label fw-semibold">Day of Week</label>
+														<select class="form-select day-of-week" required>
+															<option value="" disabled selected>Select Day</option>
+															<option value="MONDAY">Monday</option>
+															<option value="TUESDAY">Tuesday</option>
+															<option value="WEDNESDAY">Wednesday</option>
+															<option value="THURSDAY">Thursday</option>
+															<option value="FRIDAY">Friday</option>
+															<option value="SATURDAY">Saturday</option>
+															<option value="SUNDAY">Sunday</option>
+														</select>
+													</div>
+													<div class="col-md-4">
+														<label class="form-label fw-semibold">Start Time</label> <input
+															type="time" class="form-control start-time" required>
+													</div>
+													<div class="col-md-4">
+														<label class="form-label fw-semibold">End Time</label> <input
+															type="time" class="form-control end-time" required>
+													</div>
+												</div>
+												Remove button (hidden initially)
+												 <button type="button"
+													class="btn btn-outline-danger btn-sm remove-slot-btn position-absolute top-0 end-0 d-none">
+													<i class="fas fa-trash-alt"></i>
+												</button>	
+											</div> -->
+
+										</div>
+										<div class="text-danger d-none" id="slot-error" hidden>Please
+											ensure all slots are valid and complete.</div>
+										<button type="button" id="addSlotBtn"
+											class="btn btn-primary btn-sm mb-3">+ Add More Slots</button>
+
+
+
+
+
+									</form>
+								</div>
+
+								<div class="modal-footer border-0 pt-0">
+									<button type="button" class="btn btn-secondary   px-4"
+										data-bs-dismiss="modal">Cancel</button>
+									<button type="submit" class="btn btn-purple   px-4"
+										form="addUserForm">Save</button>
+								</div>
+
+							</div>
+						</div>
+					</div>
+
+					<!-- Edit User Modal -->
+					<div class="modal fade" id="editUserModal" tabindex="-1"
+						aria-labelledby="editUserModalLabel" aria-hidden="true">
+						<div class="modal-dialog modal-dialog-centered modal-md">
+							<div class="modal-content shadow-sm border-0 rounded-4">
+								<div class="modal-header border-0">
+									<h5 class="modal-title" id="editUserModalLabel">Edit User</h5>
+									<button type="button" class="btn-close" data-bs-dismiss="modal"
+										aria-label="Close"></button>
+								</div>
+								<form id="editUserForm">
+									<div class="modal-body">
+										<input type="hidden" id="edit-user-id">
+										<div class="mb-3">
+											<label for="edit-user-name" class="form-label fw-semibold">Name</label>
+											<input type="text" class="form-control" id="edit-user-name"
+												required>
+										</div>
+										<div class="mb-3">
+											<label for="edit-user-username"
+												class="form-label fw-semibold">User Name</label> <input
+												type="text" class="form-control" id="edit-user-username"
+												required>
+										</div>
+										<div class="mb-3">
+											<label for="edit-user-email" class="form-label fw-semibold">Email</label>
+											<input type="email" class="form-control" id="edit-user-email"
+												required>
+										</div>
+										<div class="mb-3">
+											<label for="edit-user-role" class="form-label fw-semibold">Role</label>
+											<select class="form-select rounded-1" id="edit-user-role"
+												disabled required>
+												<option value="ADMIN">Admin</option>
+												<option value="DOCTOR" selected>Doctor</option>
+												<option value="PATIENT">Patient</option>
+											</select>
+										</div>
+
+										<div class="mb-4 mt-4">
+											<label for="specialization" class="form-label fw-semibold">Specialization</label>
+											<select class="form-select rounded-1"
+												id="edit-specialization" name="specializationId" required>
+												<option value="" selected disabled>Select
+													specialization</option>
+												<th:block th:each="spec : ${specializations}">
+													<option th:value="${spec.id}" th:text="${spec.name}"></option>
+												</th:block>
+											</select>
+											<div class="invalid-feedback">Please select a
+												specialization.</div>
+										</div>
+
+										<div class="mb-4 mt-4">
+											<label class="form-label fw-semibold">Qualifications</label>
+											<div id="edit-qualification-group"
+												class="d-flex flex-wrap gap-2">
+												<div>
+													<input type="checkbox" name="qualifications" value="MBBS">
+													MBBS
+												</div>
+												<div>
+													<input type="checkbox" name="qualifications" value="MD">
+													MD
+												</div>
+												<div>
+													<input type="checkbox" name="qualifications" value="MS">
+													MS
+												</div>
+												<div>
+													<input type="checkbox" name="qualifications" value="BDS">
+													BDS
+												</div>
+												<div>
+													<input type="checkbox" name="qualifications" value="MDS">
+													MDS
+												</div>
+												<div>
+													<input type="checkbox" name="qualifications" value="DNB">
+													DNB
+												</div>
+												<div>
+													<input type="checkbox" name="qualifications" value="BHMS">
+													BHMS
+												</div>
+												<div>
+													<input type="checkbox" name="qualifications" value="BAMS">
+													BAMS
+												</div>
+												<div>
+													<input type="checkbox" name="qualifications" value="PhD">
+													PhD
+												</div>
+												<div>
+													<input type="checkbox" name="qualifications"
+														value="Diploma in Orthopedics"> Diploma in
+													Orthopedics
+												</div>
+												<div>
+													<input type="checkbox" name="qualifications"
+														value="Diploma in Dermatology"> Diploma in
+													Dermatology
+												</div>
+												<div>
+													<input type="checkbox" name="qualifications"
+														value="Diploma in Pediatrics"> Diploma in
+													Pediatrics
+												</div>
+												<div>
+													<input type="checkbox" name="qualifications"
+														value="Fellowship in Cardiology"> Fellowship in
+													Cardiology
+												</div>
+												<div>
+													<input type="checkbox" name="qualifications"
+														value="Fellowship in Gastroenterology"> Fellowship
+													in Gastroenterology
+												</div>
+											</div>
+											<div id="edit-qualification-error" class="text-danger d-none">Please
+												select at least one qualification.</div>
+										</div>
+
+
+										<hr class="my-3">
+
+										<h5 class="fw-bold mb-3">Doctor Availability Slots</h5>
+
+										<div id="edit-availabilitySlotsWrapper">
+											<!-- 		<div class="availability-slot mb-4 border p-3 rounded">
+												<div class="row g-3">
+													<div class="col-md-4">
+														<label class="form-label fw-semibold">Day of Week</label>
+														<select class="form-select day-of-week" required>
+															<option value="" disabled selected>Select Day</option>
+															<option value="MONDAY">Monday</option>
+															<option value="TUESDAY">Tuesday</option>
+															<option value="WEDNESDAY">Wednesday</option>
+															<option value="THURSDAY">Thursday</option>
+															<option value="FRIDAY">Friday</option>
+															<option value="SATURDAY">Saturday</option>
+															<option value="SUNDAY">Sunday</option>
+														</select>
+													</div>
+													<div class="col-md-4">
+														<label class="form-label fw-semibold">Start Time</label> <input
+															type="time" class="form-control start-time" required>
+													</div>
+													<div class="col-md-4">
+														<label class="form-label fw-semibold">End Time</label> <input
+															type="time" class="form-control end-time" required>
+													</div>
+												</div>
+												 <button type="button"
+													class="btn btn-outline-danger btn-sm remove-slot-btn position-absolute top-0 end-0 d-none">
+													<i class="fas fa-trash-alt"></i>
+												</button>
+											</div> -->
+										</div>
+
+										<button type="button" id="edit-addSlotBtn"
+											class="btn btn-primary btn-sm mb-3">+ Add More Slots</button>
+
+										<div class="invalid-feedback d-none" id="edit-slot-error">
+											Please ensure all slots are valid and complete.</div>
+
+										<!-- Add more fields if needed -->
+									</div>
+									<div class="modal-footer border-0">
+										<button type="button" class="btn btn-secondary"
+											data-bs-dismiss="modal">Cancel</button>
+										<button type="submit" class="btn btn-purple">Save
+											Changes</button>
+									</div>
+								</form>
+							</div>
+						</div>
+					</div>
+
+					<div class="modal fade" id="confirmDeleteModal" tabindex="-1"
+						aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+						<div class="modal-dialog modal-dialog-centered">
+							<div class="modal-content shadow-sm rounded-3">
+								<div class="modal-header border-0">
+									<h5 class="modal-title" id="confirmDeleteModalLabel">Confirm
+										Delete</h5>
+									<button type="button" class="btn-close" data-bs-dismiss="modal"
+										aria-label="Close"></button>
+								</div>
+								<div class="modal-body">Will be permanently! Are you sure
+									you want to delete this user?</div>
+								<div class="modal-footer border-0">
+									<button type="button" class="btn btn-secondary"
+										data-bs-dismiss="modal">Cancel</button>
+									<button type="button" class="btn btn-danger"
+										id="confirmDeleteBtn">Delete</button>
+								</div>
+							</div>
+						</div>
+					</div>
+
+
+					<div class="ht-40"></div>
+				</div>
+				<!-- az-content-body -->
+			</div>
+			<!-- container -->
+		</div>
+		<!-- az-content -->
+	</div>
+
+	<script src="../lib/jquery/jquery.min.js"></script>
+	<script src="../lib/bootstrap/js/bootstrap.bundle.min.js"></script>
+	<script src="../lib/ionicons/ionicons.js"></script>
+	<script src="../js/jquery.cookie.js" type="text/javascript"></script>
+
+	<script src="../js/azia.js"></script>
+
+	<th:block layout:fragment="script">
+		<script th:src="@{'/js/docon/doctors.js'}"></script>
+	</th:block>
+</body>
+</html>

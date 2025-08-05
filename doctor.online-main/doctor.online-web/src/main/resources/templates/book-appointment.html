@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{fragments/layout}">
+<head>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async
+	src="https://www.googletagmanager.com/gtag/js?id=UA-90680653-2"></script>
+<script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-90680653-2');
+    </script>
+
+<!-- Required meta tags -->
+<meta charset="utf-8">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+<!-- Twitter -->
+<!-- <meta name="twitter:site" content="@bootstrapdash">
+    <meta name="twitter:creator" content="@bootstrapdash">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Azia">
+    <meta name="twitter:description" content="Responsive Bootstrap 4 Dashboard Template">
+    <meta name="twitter:image" content="https://www.bootstrapdash.com/azia/img/azia-social.png"> -->
+
+<!-- Facebook -->
+<!-- <meta property="og:url" content="https://www.bootstrapdash.com/azia">
+    <meta property="og:title" content="Azia">
+    <meta property="og:description" content="Responsive Bootstrap 4 Dashboard Template">
+
+    <meta property="og:image" content="https://www.bootstrapdash.com/azia/img/azia-social.png">
+    <meta property="og:image:secure_url" content="https://www.bootstrapdash.com/azia/img/azia-social.png">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="600"> -->
+
+<!-- Meta -->
+<meta name="description"
+	content="Responsive Bootstrap 4 Dashboard Template">
+<meta name="author" content="BootstrapDash">
+
+<title>Consultations | Doctor Online</title>
+
+<!-- vendor css -->
+<link href="../lib/fontawesome-free/css/all.min.css" rel="stylesheet">
+<link href="../lib/ionicons/css/ionicons.min.css" rel="stylesheet">
+<link href="../lib/typicons.font/typicons.css" rel="stylesheet">
+
+<!-- azia CSS -->
+<link rel="stylesheet" href="../css/azia.css">
+
+<style>
+.department-card {
+	cursor: pointer;
+	transition: all 0.3s ease;
+	border: 2px solid transparent;
+	height: 100%;
+}
+
+.department-card:hover {
+	transform: translateY(-5px);
+	box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+	border-color: #0d6efd;
+}
+
+.department-card.selected {
+	border-color: #0d6efd;
+	background-color: #e7f3ff;
+}
+
+.doctor-card {
+	cursor: pointer;
+	transition: all 0.3s ease;
+	border: 2px solid transparent;
+}
+
+.doctor-card:hover {
+	border-color: #198754;
+	box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.doctor-card.selected {
+	border-color: #198754;
+	background-color: #e8f5e9;
+}
+
+.appointment-type-card {
+	cursor: pointer;
+	transition: all 0.3s ease;
+}
+
+.slot {
+	cursor: pointer;
+	transition: all 0.3s ease;
+	border: 1px solid #dee2e6;
+	background-color: #e8f5e9;
+	color: #333;
+}
+
+.slot:hover {
+	background-color: #c8e6c9;
+	border-color: #4caf50;
+}
+
+.slot.selected {
+	background-color: #4caf50;
+	color: white;
+	border-color: #4caf50;
+}
+
+.slot.booked {
+	background-color: #6c757d;
+	color: white;
+	cursor: not-allowed;
+	border-color: #6c757d;
+}
+
+.slot.booked:hover {
+	background-color: #6c757d;
+	border-color: #6c757d;
+}
+
+.step-indicator {
+	display: flex;
+	justify-content: center;
+	margin-bottom: 30px;
+}
+
+.step {
+	width: 40px;
+	height: 40px;
+	border-radius: 50%;
+	background-color: #dee2e6;
+	color: #6c757d;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	margin: 0 10px;
+	font-weight: bold;
+}
+
+.step.active {
+	background-color: #0d6efd;
+	color: white;
+}
+
+.step.completed {
+	background-color: #198754;
+	color: white;
+}
+
+.instant-booking {
+	background: linear-gradient(135deg, #FF6B6B, #ff5252);
+	color: white;
+	cursor: pointer;
+	transition: all 0.3s ease;
+}
+
+.instant-booking:hover {
+	transform: translateY(-3px);
+	box-shadow: 0 8px 25px rgba(255, 107, 107, 0.4);
+}
+
+.scheduled-booking {
+	background: linear-gradient(135deg, #4D96FF, #2196f3);
+	color: white;
+	cursor: pointer;
+	transition: all 0.3s ease;
+}
+
+.scheduled-booking:hover {
+	transform: translateY(-3px);
+	box-shadow: 0 8px 25px rgba(77, 150, 255, 0.4);
+}
+
+.section {
+	display: none;
+}
+
+.section.active {
+	display: block;
+}
+
+.selected-info {
+	background-color: #e8f5e9;
+	border: 1px solid #4caf50;
+	border-radius: 8px;
+	padding: 15px;
+	margin-top: 20px;
+}
+
+.instant-info {
+	background-color: #fff3cd;
+	border: 1px solid #ffc107;
+	border-radius: 8px;
+	padding: 15px;
+	margin-top: 20px;
+}
+</style>
+
+</head>
+<body>
+
+	<div class="content-wrapper" layout:fragment="content">
+
+		<div class="az-content pd-y-20 pd-lg-y-30 pd-xl-y-40">
+			<div class="container">
+				<div class="az-content-left az-content-left-components">
+					<div class="component-item">
+						<label>Consultations</label>
+						<nav class="nav flex-column">
+							<a th:href="@{/appointments/book-appointment}"
+								class="nav-link active">New</a> <a
+								th:href="@{/appointments/awaiting}" class="nav-link"
+								th:classappend="${activeTab} == 'Awaiting' ? 'active' : ''">Awaiting</a>
+							<a th:href="@{/appointments/confirmed}" class="nav-link"
+								th:classappend="${activeTab} == 'Confirmed' ? 'active' : ''">Confirmed</a>
+							<a th:href="@{/appointments/completed}" class="nav-link"
+								th:classappend="${activeTab} == 'Completed' ? 'active' : ''">Completed
+							</a> <a th:href="@{/appointments/expired}" class="nav-link"
+								th:classappend="${activeTab} == 'Expired' ? 'active' : ''">Expired
+							</a>
+						</nav>
+
+					</div>
+					<!-- component-item -->
+
+				</div>
+				<!-- az-content-left -->
+				<div class="az-content-body pd-lg-l-40 d-flex flex-column">
+					<div class="az-content-breadcrumb">
+						<span>Consultations</span>
+					</div>
+					<div class="d-flex justify-content-between align-items-center">
+						<h2 class="az-content-title">New</h2>
+					</div>
+
+
+					<div class="">
+						<div class="row justify-content-center">
+							<div class="col-lg-12">
+								<!-- <div class="card shadow-lg"> Commented for future reference-->
+								<div class="">
+									<!-- <div class="card-header bg-primary text-white">
+										<h4 class="mb-0 text-center">
+											<i class="fas fa-hospital-alt me-2"></i> Hospital Appointment
+											Booking
+										</h4>
+									</div> -->
+
+									<!-- <div class="card-body"> Commented for future reference-->
+									<div class="">
+										<!-- Step Indicator -->
+										<div class="step-indicator">
+											<div class="step active" id="step1">1</div>
+											<div class="step" id="step2">2</div>
+											<div class="step" id="step3">3</div>
+											<div class="step" id="step4">4</div>
+										</div>
+
+										<div id="loader" style="text-align: center; padding: 1rem;">
+											<span class="spinner-border text-primary" role="status"></span>
+											<p>Loading data...</p>
+										</div>
+
+										<!-- Step 1: Select Department -->
+										<div class="section active" id="departmentSection"
+											style="display: none;">
+											<h5 class="mb-4 text-center">
+												<i class="fas fa-stethoscope me-2"></i> Select Department
+											</h5>
+
+											<div class="row g-3" id="departmentsContainer">
+												<!-- Departments will be loaded here -->
+											</div>
+										</div>
+
+										<!-- Step 2: Select Appointment Type -->
+										<div class="section" id="appointmentTypeSection">
+											<h5 class="mb-4 text-center">
+												<i class="fas fa-clock me-2"></i> Select Appointment Type
+											</h5>
+											<div class="row g-4">
+												<div class="col-md-6">
+													<div
+														class="card h-100 instant-booking appointment-type-card"
+														data-type="instant">
+														<div class="card-body text-center">
+															<i class="fas fa-bolt fa-3x mb-3"></i>
+															<h5>Instant Appointment</h5>
+															<p class="mb-0">Get immediate consultation with any
+																available doctor in the department</p>
+															<small class="d-block mt-2">No doctor selection
+																required</small>
+														</div>
+													</div>
+												</div>
+												<div class="col-md-6">
+													<div
+														class="card h-100 scheduled-booking appointment-type-card"
+														data-type="scheduled">
+														<div class="card-body text-center">
+															<i class="fas fa-calendar-alt fa-3x mb-3"></i>
+															<h5>Scheduled Appointment</h5>
+															<p class="mb-0">Book a specific time slot with your
+																preferred doctor</p>
+															<small class="d-block mt-2">Choose doctor and
+																time</small>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+
+										<!-- Step 3a: Select Doctor (for scheduled) -->
+										<div class="section" id="doctorSection">
+											<h5 class="mb-4 text-center">
+												<i class="fas fa-user-md me-2"></i> Select Doctor
+											</h5>
+											<div class="row g-3" id="doctorsContainer">
+												<!-- Doctors will be loaded here -->
+											</div>
+										</div>
+
+										<!-- Step 3b: Instant Booking Info -->
+										<div class="section" id="instantSection">
+											<h5 class="mb-4 text-center">
+												<i class="fas fa-info-circle me-2"></i> Instant Appointment
+												Details
+											</h5>
+											<div class="instant-info">
+												<h6>
+													<i class="fas fa-exclamation-triangle me-2"></i>How Instant
+													Appointments Work:
+												</h6>
+												<ul class="mb-3">
+													<li>Your appointment will be assigned to the next
+														available doctor in the selected department</li>
+													<li>You'll be notified immediately about your
+														appointment details</li>
+													<li>Estimated wait time: 15-30 minutes</li>
+													<li>All doctors in this department will be notified of
+														your request</li>
+												</ul>
+												<p class="mb-0">
+													<strong>Selected Department:</strong> <span
+														id="selectedDeptInstant">-</span>
+												</p>
+											</div>
+										</div>
+
+										<!-- Step 4a: Select Date and Time (for scheduled) -->
+										<div class="section" id="schedulingSection">
+											<h5 class="mb-4 text-center">
+												<i class="fas fa-calendar-check me-2"></i> Select Date &
+												Time
+											</h5>
+
+											<div class="row mb-4">
+												<div class="col-md-6 mx-auto">
+													<label for="dateSelect" class="form-label">Select
+														Date</label> <input type="date" class="form-control"
+														id="dateSelect">
+												</div>
+											</div>
+
+											<div id="slotsSection" style="display: none;">
+												<h6 class="mb-3">Available Time Slots</h6>
+
+												<div id="slotLoadingSpinner"
+													style="text-align: center; padding: 1rem;">
+													<span class="spinner-border text-primary" role="status"></span>
+													<p>Loading available slots...</p>
+												</div>
+												<div id="slotsContainer"></div>
+											</div>
+
+											<div id="selectedSlotInfo" style="display: none;">
+												<div class="selected-info">
+													<h6>
+														<i class="fas fa-check-circle me-2"></i>Selected
+														Appointment:
+													</h6>
+													<div id="selectedDetails"></div>
+													<button type="button"
+														class="btn btn-sm btn-outline-danger mt-2"
+														id="clearSelection">
+														<i class="fas fa-times me-1"></i>Change Slot
+													</button>
+												</div>
+											</div>
+										</div>
+
+										<!-- Step 5: Patient Information -->
+										<div class="section" id="patientSection">
+											<h5 class="mt-2 mb-4 text-center">
+												<i class="fas fa-user me-2"></i> Patient Information
+											</h5>
+
+											<form id="appointmentForm">
+												<div class="row">
+													<div class="col-md-6 mb-3">
+														<label for="isForSelf" class="form-label">Appointment
+															For</label> <select class="form-select" id="isForSelf">
+															<option value="true" selected>Myself</option>
+															<option value="false">Someone Else</option>
+														</select>
+													</div>
+												</div>
+												<div id="patientDetails">
+													<div class="row">
+
+														<div class="col-md-6 mb-3">
+															<label for="patientName" class="form-label">Full
+																Name *</label> <input type="text" class="form-control"
+																id="patientName" required>
+														</div>
+														<div class="col-md-6 mb-3">
+															<label for="patientPhone" class="form-label">Phone
+																Number *</label> <input type="tel" class="form-control"
+																id="patientPhone" required>
+														</div>
+													</div>
+													<div class="row">
+														<div class="col-md-6 mb-3">
+															<label for="patientEmail" class="form-label">Email</label>
+															<input type="email" class="form-control"
+																id="patientEmail">
+														</div>
+														<div class="col-md-6 mb-3">
+															<label for="patientAge" class="form-label">Age *</label>
+															<input type="number" class="form-control" id="patientAge"
+																min="1" max="120" required>
+														</div>
+													</div>
+													<div class="row">
+														<div class="col-md-6 mb-3">
+															<label for="patientGender" class="form-label">Gender
+																*</label> <select class="form-select" id="patientGender"
+																required>
+																<option value="">Select Gender</option>
+																<option value="male">Male</option>
+																<option value="female">Female</option>
+																<option value="other">Other</option>
+															</select>
+														</div>
+														<div class="col-md-6 mb-3">
+															<label for="emergencyContact" class="form-label">Emergency
+																Contact</label> <input type="tel" class="form-control"
+																id="emergencyContact">
+														</div>
+													</div>
+												</div>
+												<div class="mb-3">
+													<label for="symptoms" class="form-label">Reason for
+														Visit / Symptoms *</label>
+													<textarea class="form-control" id="symptoms" rows="3"
+														placeholder="Please describe your symptoms or reason for visit"
+														required></textarea>
+												</div>
+
+												<div class="d-grid">
+													<button type="submit" class="btn btn-success btn-lg"
+														id="bookAppointment">
+														<i class="fas fa-check me-2"></i> Book Appointment
+													</button>
+												</div>
+											</form>
+										</div>
+
+										<!-- Navigation Buttons -->
+										<div class="d-flex justify-content-between mt-4"
+											id="navigationButtons">
+											<button type="button" class="btn btn-secondary" id="prevBtn"
+												style="display: none;">
+												<i class="fas fa-arrow-left me-2"></i>Previous
+											</button>
+											<button type="button" class="btn btn-primary" id="nextBtn">
+												Next<i class="fas fa-arrow-right ms-2"></i>
+											</button>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<!-- Confirm Appointment Modal -->
+					<div class="modal fade" id="confirmAppointmentModal" tabindex="-1"
+						aria-labelledby="confirmAppointmentModalLabel" aria-hidden="true">
+						<div class="modal-dialog modal-lg modal-dialog-centered">
+							<div class="modal-content">
+								<div class="modal-header bg-primary text-white">
+									<h5 class="modal-title" id="confirmAppointmentModalLabel">Confirm
+										Appointment Details</h5>
+									<button type="button" class="btn-close" data-bs-dismiss="modal"
+										aria-label="Close"></button>
+								</div>
+								<div class="modal-body">
+									<div id="appointmentDetailsView" class="px-2">
+										<!-- Details will be populated here -->
+									</div>
+								</div>
+								<div class="modal-footer">
+									<button type="button" class="btn btn-secondary"
+										data-bs-dismiss="modal">Edit</button>
+									<button type="button" class="btn btn-success"
+										id="confirmSubmitBtn">Confirm & Submit</button>
+								</div>
+							</div>
+						</div>
+					</div>
+
+
+					<!-- Modal -->
+					<div class="modal fade" id="appointmentSuccessModal" tabindex="-1"
+						aria-labelledby="appointmentSuccessLabel" aria-hidden="true">
+						<div class="modal-dialog modal-dialog-centered">
+							<div class="modal-content shadow">
+								<div class="modal-header bg-success text-white">
+									<h5 class="modal-title" id="appointmentSuccessLabel">Appointment
+										Submitted</h5>
+									<button type="button" class="btn-close btn-close-white"
+										data-bs-dismiss="modal" aria-label="Close"></button>
+								</div>
+								<div class="modal-body text-center">
+									<p>Your appointment has been successfully created!</p>
+									<p>What would you like to do next?</p>
+								</div>
+								<div class="modal-footer justify-content-center">
+									<button id="gotoPendingBtn" type="button"
+										class="btn btn-primary">Go to Awaiting Consultations</button>
+									<button id="reloadPageBtn" type="button"
+										class="btn btn-secondary" data-bs-dismiss="modal">Go
+										back to Departments</button>
+								</div>
+							</div>
+						</div>
+					</div>
+
+
+
+					<div class="ht-40"></div>
+				</div>
+				<!-- az-content-body -->
+			</div>
+			<!-- container -->
+		</div>
+		<!-- az-content -->
+	</div>
+
+	<script src="../lib/jquery/jquery.min.js"></script>
+	<script src="../lib/bootstrap/js/bootstrap.bundle.min.js"></script>
+	<script src="../lib/ionicons/ionicons.js"></script>
+	<script src="../js/jquery.cookie.js" type="text/javascript"></script>
+
+	<script src="../js/azia.js"></script>
+
+	<th:block layout:fragment="script">
+		<script th:src="@{'/js/docon/book-appointment.js'}"></script>
+	</th:block>
+</body>
+</html>
